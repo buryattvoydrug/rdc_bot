@@ -1,0 +1,19 @@
+{
+  "name": "rdc_bot",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "author": "buryattvoydrug <buryattvoydrug@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nodemon index.ts",
+    "start": "node index.ts"
+  },
+  "dependencies": {
+    "@types/node": "^20.3.1",
+    "@types/node-telegram-bot-api": "^0.61.6",
+    "dotenv": "^16.1.4",
+    "node": "^20.2.0",
+    "node-telegram-bot-api": "^0.61.0",
+    "nodemon": "^2.0.22"
+  }
+}
