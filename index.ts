@@ -3,11 +3,8 @@ import * as dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
-import tokenRoute from './routes/token'
-import axios from 'axios';
-import Token from './models/Token';
-import { getTokenByTelegramID } from './utils/token';
-
+import tokenRoute from "./routes/token"
+import { generateToken, getNewToken, getTokenByTelegramID, resetToken } from './utils/token';
 
 dotenv.config();
 
@@ -65,16 +62,27 @@ bot.on('callback_query', async (query) => {
       //todo: отправка api ключа по id пользователя
       const tokenWithOwner = await getTokenByTelegramID(query.from.id.toString());
       if (tokenWithOwner) {
+        //если уже выдавали токен, то отказ
         bot.sendMessage(id || 0, `Вы уже получали код для тестирования`);
+        // generateToken();
       } else {
-        // bot.sendMessage(id || 0, `Ваш код для тестирования: ${token?.token}`);
-        // выдать новый токен
+        //если не выдавали токен, то выдаем новый токен
+        const newToken = await getNewToken(query.from.id.toString());
+        if (newToken) {
+          await bot.sendMessage(id || 0, `Ваш код для тестирования: ${newToken?.token}. Ваша ссылка: https://rdc.club/promo?id=${query.from.id.toString()}&code=${newToken}`);
+          //освобождаем токен если пользователь не успел залогиниться за 10 минут (600000 мс)
+          resetToken(query.from.id.toString(), 600000);
+        }
+        else {
+          await bot.sendMessage(id || 0, `Токены закончились`);
+        }
       }
       break
   }
-
   return;
 })
+
+app.use("/api/token", tokenRoute);
 
 const PORT = 8000;
 
