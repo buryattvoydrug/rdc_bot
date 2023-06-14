@@ -5,7 +5,7 @@
   "author": "buryattvoydrug <buryattvoydrug@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "build": "tsc -p tsconfig.json && cp .env ./build/.env",
+    "build": "tsc -p tsconfig.json",
     "start": "node build/index.js",
     "dev": "nodemon index.ts"
   },
