@@ -3,6 +3,11 @@ import * as dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
+import tokenRoute from './routes/token'
+import axios from 'axios';
+import Token from './models/Token';
+import { getTokenByTelegramID } from './utils/token';
+
 
 dotenv.config();
 
@@ -43,7 +48,7 @@ bot.onText(/\/start/, msg => {
   bot.sendMessage(chat.id, 'Добро пожаловать в бот RDC!', keyboard)
 });
 
-bot.on('callback_query', (query) => {
+bot.on('callback_query', async (query) => {
   const id = query.message?.chat.id;
 
   switch (query.data) {
@@ -58,7 +63,13 @@ bot.on('callback_query', (query) => {
       break
     case 'get_key':
       //todo: отправка api ключа по id пользователя
-      bot.sendMessage(id || 0, `Ваш код для тестирования: ${process.env.TEST_CODE}`);
+      const tokenWithOwner = await getTokenByTelegramID(query.from.id.toString());
+      if (tokenWithOwner) {
+        bot.sendMessage(id || 0, `Вы уже получали код для тестирования`);
+      } else {
+        // bot.sendMessage(id || 0, `Ваш код для тестирования: ${token?.token}`);
+        // выдать новый токен
+      }
       break
   }
 
