@@ -1,9 +1,22 @@
 import TelegramApi from 'node-telegram-bot-api';
 import * as dotenv from "dotenv";
+import express from "express";
+import cors from "cors";
+import mongoose from "mongoose";
 
 dotenv.config();
 
 const bot = new TelegramApi(process.env.API_KEY || '', {polling: true});
+const app = express();
+
+app.use(express.json());
+app.use(cors());
+
+mongoose.connect(process.env.MONGO_URL || '').then((res) => {
+  console.log("Connected to MongoDB");
+}).catch((error) => {
+  console.log(error);
+});
 
 bot.setMyCommands([
   {command: '/start', description: 'Старт!'},
@@ -51,3 +64,7 @@ bot.on('callback_query', (query) => {
 
   return;
 })
+
+const PORT = 8000;
+
+app.listen(PORT, () => console.log('server started on PORT ' + PORT))
