@@ -69,7 +69,7 @@ bot.on('callback_query', async (query) => {
         //если не выдавали токен, то выдаем новый токен
         const newToken = await getNewToken(query.from.id.toString());
         if (newToken) {
-          await bot.sendMessage(id || 0, `Ваш код для тестирования: ${newToken?.token}. Ваша ссылка: https://rdc.club/promo?id=${query.from.id.toString()}&code=${newToken}`);
+          await bot.sendMessage(id || 0, `Ваш код для тестирования: ${newToken?.token}. Ваша ссылка: https://rdc.club/promo?id=${query.from.id.toString()}&code=${newToken.token}`);
           //освобождаем токен если пользователь не успел залогиниться за 10 минут (600000 мс)
           resetToken(query.from.id.toString(), 600000);
         }
